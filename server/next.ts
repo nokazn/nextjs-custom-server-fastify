@@ -1,21 +1,19 @@
-import fastify from 'fastify';
 import Next from 'next';
+import type { FastifyPluginCallback } from 'fastify';
 
-const server = fastify({
-  logger: { level: 'error' },
-  pluginTimeout: 0,
-});
+import { IS_DEV } from './constants';
 
-const port = parseInt(process.env.PORT ?? '0', 10) || 3000;
-const dev = process.env.NODE_ENV !== 'production';
-
-server.register((fastify, _opts, next) => {
-  const app = Next({ dev });
+/**
+ * Next.js の リクエストハンドラーを Fastify に渡す
+ */
+export const nextRegisterer: FastifyPluginCallback = (fastify, _opts, next) => {
+  const app = Next({ dev: IS_DEV });
   const handle = app.getRequestHandler();
+
   app
     .prepare()
     .then(() => {
-      if (dev) {
+      if (IS_DEV) {
         fastify.get('/_next/*', (req, reply) => {
           return handle(req.raw, reply.raw).then(() => {
             reply.sent = true;
@@ -41,7 +39,6 @@ server.register((fastify, _opts, next) => {
 
       fastify.all('/*', (req, reply) => {
         return handle(req.raw, reply.raw).then(() => {
-          console.log({ path: req.raw });
           reply.sent = true;
         });
       });
@@ -55,9 +52,4 @@ server.register((fastify, _opts, next) => {
       next();
     })
     .catch((err) => next(err));
-});
-
-server.listen(port, (err) => {
-  if (err) throw err;
-  console.log(`> Ready on http://localhost:${port}`);
-});
+};
