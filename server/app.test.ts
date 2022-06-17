@@ -1,6 +1,10 @@
 import { server } from './app';
 
 describe('sample', () => {
+  afterAll(() => {
+    server.close();
+  });
+
   it('requests the "/" route', async () => {
     const response = await server.inject({
       method: 'GET',
@@ -18,6 +22,10 @@ describe('sample', () => {
         stage: 'gold',
       },
     });
-    expect(response.body).toEqual(200);
+    expect(JSON.parse(response.body)).toStrictEqual({
+      a: 1,
+      b: 2,
+      c: 3,
+    });
   });
 });
