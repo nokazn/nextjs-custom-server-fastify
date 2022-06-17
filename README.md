@@ -23,3 +23,8 @@ yarn create next-app --example custom-server-fastify custom-server-fastify-app
 # or
 pnpm create next-app --example custom-server-fastify custom-server-fastify-app
 ```
+
+## 注意点
+
+- openapi-validator-middleware を fastify と使用するのに、uri-js と fastify-plugin をインストールする必要がある
+- `server/` 配下のファイルは HMR がうまく効かない
