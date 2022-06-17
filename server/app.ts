@@ -15,13 +15,14 @@ server.register(inputValidation.validate({}));
 
 server.setErrorHandler(async (err, req, reply) => {
   if (err instanceof inputValidation.InputValidationError) {
+    console.error(err);
     return reply.status(400).send({ more_info: err.errors });
   }
   reply.status(500);
   reply.send();
 });
 
-server.post('/pets', (req, reply) => {
+server.get('/pets', (req, reply) => {
   reply.status(200).send({
     a: 1,
     b: 2,

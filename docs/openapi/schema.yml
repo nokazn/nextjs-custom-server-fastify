@@ -20,7 +20,7 @@ paths:
           schema:
             type: integer
             format: int32
-        - name: foo
+        - name: stage
           in: query
           required: true
           schema:
